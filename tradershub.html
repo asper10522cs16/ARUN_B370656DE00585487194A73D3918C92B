@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradersHub Center – Trade Smarter</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --gold: #F5C842;
+    --gold-light: #FFE180;
+    --green: #00E676;
+    --red: #FF4444;
+    --dark: #090E1A;
+    --dark2: #0D1526;
+    --dark3: #121E35;
+    --surface: #162040;
+    --surface2: #1C2D52;
+    --border: rgba(245,200,66,0.15);
+    --text: #E8EDF5;
+    --muted: #8A9BBE;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── DISCLAIMER BANNER ── */
+  .disclaimer-banner {
+    background: linear-gradient(90deg, #7B1C1C, #B02020, #7B1C1C);
+    color: #fff;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    border-bottom: 2px solid #FF6B6B;
+    animation: pulse-banner 3s ease-in-out infinite;
+  }
+  @keyframes pulse-banner {
+    0%,100% { border-bottom-color: #FF6B6B; }
+    50% { border-bottom-color: #FFD700; }
+  }
+  .disclaimer-banner span { color: var(--gold); }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: sticky;
+    top: 40px;
+    z-index: 1000;
+    background: rgba(9,14,26,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 6%;
+    transition: all 0.3s;
+  }
+  .logo {
+    font-family: var(--font-head);
+    font-size: 1.45rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--gold), #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo i { -webkit-text-fill-color: var(--gold); font-size: 1.3rem; }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: var(--gold);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-cta {
+    background: linear-gradient(135deg, var(--gold), #D4A800);
+    color: #000 !important;
+    padding: 8px 22px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    -webkit-text-fill-color: #000 !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,200,66,0.4); }
+  .nav-cta::after { display: none !important; }
+
+  .hamburger { display: none; cursor: pointer; font-size: 1.5rem; color: var(--gold); }
+
+  /* ── HERO ── */
+  #home {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 80px 6% 60px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(245,200,66,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(0,230,118,0.05) 0%, transparent 50%),
+                linear-gradient(180deg, var(--dark) 0%, var(--dark2) 100%);
+    z-index: 0;
+  }
+
+  /* Candlestick chart animation */
+  .chart-bg {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 65%;
+    height: 100%;
+    opacity: 0.12;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .chart-line {
+    position: absolute;
+    bottom: 20%;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), var(--green), var(--gold), var(--gold), var(--red), var(--green));
+    clip-path: polygon(
+      0% 100%, 5% 80%, 8% 85%, 10% 60%, 13% 65%, 15% 40%, 18% 50%,
+      20% 30%, 22% 38%, 25% 20%, 28% 28%, 30% 10%, 33% 18%, 35% 5%,
+      38% 15%, 40% 8%, 43% 20%, 46% 12%, 48% 25%, 50% 15%, 53% 30%,
+      55% 20%, 58% 35%, 60% 28%, 63% 42%, 65% 35%, 68% 50%, 70% 42%,
+      73% 38%, 75% 55%, 78% 48%, 80% 62%, 83% 55%, 85% 45%, 88% 60%,
+      90% 50%, 93% 65%, 95% 55%, 97% 70%, 100% 60%, 100% 100%
+    );
+    animation: chartMove 8s ease-in-out infinite;
+  }
+  @keyframes chartMove {
+    0%,100% { transform: translateX(0); }
+    50% { transform: translateX(-3%); }
+  }
+
+  /* Floating candles */
+  .candles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .candle {
+    position: absolute;
+    bottom: 15%;
+    width: 8px;
+    border-radius: 2px;
+    animation: candleFloat 4s ease-in-out infinite;
+  }
+  .candle::before {
+    content: '';
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    width: 2px;
+    background: inherit;
+  }
+  .candle.up { background: var(--green); }
+  .candle.down { background: var(--red); }
+
+  /* Ticker tape */
+  .ticker {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(22,32,64,0.8);
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 60px;
+    animation: tickerScroll 25s linear infinite;
+    white-space: nowrap;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .tick-item { display: flex; align-items: center; gap: 8px; }
+  .tick-item .up { color: var(--green); }
+  .tick-item .down { color: var(--red); }
+  .tick-name { color: var(--muted); }
+
+  /* Floating particles */
+  .particles { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    animation: particleDrift linear infinite;
+    opacity: 0;
+  }
+  @keyframes particleDrift {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(245,200,66,0.1);
+    border: 1px solid rgba(245,200,66,0.3);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-badge i { font-size: 0.7rem; }
+  .hero-title {
+    font-family: var(--font-head);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero-title .accent {
+    background: linear-gradient(135deg, var(--gold), #FFE180);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 14px;
+    animation: fadeUp 0.8s 0.25s ease both;
+  }
+  .hero-warn {
+    color: #FF8A8A;
+    font-size: 0.8rem;
+    margin-bottom: 36px;
+    animation: fadeUp 0.8s 0.32s ease both;
+  }
+  .hero-warn i { margin-right: 6px; }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--gold), #D4A800);
+    color: #000;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 14px 34px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: fadeUp 0.8s 0.4s ease both;
+    letter-spacing: 0.03em;
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(245,200,66,0.45);
+  }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-head);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 13px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .btn-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(245,200,66,0.05);
+  }
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 52px;
+    animation: fadeUp 0.8s 0.55s ease both;
+  }
+  .stat { }
+  .stat-num {
+    font-family: var(--font-head);
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: var(--gold);
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 90px 6%; }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--gold);
+  }
+  .section-title {
+    font-family: var(--font-head);
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── ABOUT ── */
+  #about { background: var(--dark2); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    margin-top: 56px;
+  }
+  .about-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-visual::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(245,200,66,0.15), transparent);
+    border-radius: 50%;
+  }
+  .mini-chart {
+    width: 100%;
+    height: 160px;
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .mini-chart svg { width: 100%; height: 100%; }
+
+  .about-features { display: flex; flex-direction: column; gap: 20px; }
+  .about-feat {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  .about-feat:hover { border-color: var(--gold); transform: translateX(4px); }
+  .feat-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, rgba(245,200,66,0.15), rgba(245,200,66,0.05));
+    border: 1px solid rgba(245,200,66,0.25);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .feat-text h4 { font-family: var(--font-head); font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .feat-text p { color: var(--muted); font-size: 0.83rem; line-height: 1.5; }
+
+  /* ── PLANS ── */
+  #plans { background: var(--dark); }
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 56px;
+  }
+  .plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 30px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    overflow: hidden;
+  }
+  .plan-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .plan-card:hover { transform: translateY(-8px); box-shadow: 0 24px 60px rgba(0,0,0,0.4); border-color: rgba(245,200,66,0.3); }
+  .plan-card:hover::before { opacity: 1; }
+
+  .plan-card.popular {
+    background: linear-gradient(160deg, #1C2D52, #162040);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px rgba(245,200,66,0.2), 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .plan-card.popular::before { opacity: 1; }
+
+  .popular-badge {
+    position: absolute;
+    top: -1px; right: 24px;
+    background: linear-gradient(135deg, var(--gold), #D4A800);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .plan-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  .plan-icon.gold { background: rgba(245,200,66,0.1); color: var(--gold); border: 1px solid rgba(245,200,66,0.2); }
+  .plan-icon.blue { background: rgba(0,120,255,0.1); color: #4DA3FF; border: 1px solid rgba(0,120,255,0.2); }
+  .plan-icon.green { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+
+  .plan-name {
+    font-family: var(--font-head);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .plan-tagline { color: var(--muted); font-size: 0.82rem; margin-bottom: 24px; }
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 28px;
+  }
+  .price-currency { color: var(--gold); font-size: 1.2rem; font-weight: 700; }
+  .price-amount {
+    font-family: var(--font-head);
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+  }
+  .price-period { color: var(--muted); font-size: 0.82rem; }
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .plan-features li i { color: var(--green); font-size: 0.75rem; }
+  .plan-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .plan-btn.outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--text);
+  }
+  .plan-btn.outline:hover { border-color: var(--gold); color: var(--gold); }
+  .plan-btn.filled {
+    background: linear-gradient(135deg, var(--gold), #D4A800);
+    border: none;
+    color: #000;
+  }
+  .plan-btn.filled:hover { box-shadow: 0 8px 24px rgba(245,200,66,0.4); transform: translateY(-2px); }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--dark2); }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .testi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .testi-card:hover { transform: translateY(-4px); border-color: rgba(245,200,66,0.25); }
+  .testi-stars { color: var(--gold); font-size: 0.85rem; margin-bottom: 16px; letter-spacing: 2px; }
+  .testi-text { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #D4A800);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-head);
+    font-weight: 800;
+    color: #000;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .testi-name { font-weight: 600; font-size: 0.88rem; }
+  .testi-loc { color: var(--muted); font-size: 0.75rem; }
+
+  /* ── FAQ ── */
+  #faq { background: var(--dark); }
+  .faq-list { max-width: 760px; margin: 56px auto 0; display: flex; flex-direction: column; gap: 12px; }
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .faq-q {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 20px 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    transition: color 0.2s;
+  }
+  .faq-q:hover { color: var(--gold); }
+  .faq-q i { color: var(--gold); transition: transform 0.3s; flex-shrink: 0; }
+  .faq-item.open .faq-q i { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    padding: 0 24px;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 24px 20px; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--dark2); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    margin-top: 56px;
+    align-items: start;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 20px; }
+  .contact-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.3s;
+  }
+  .contact-item:hover { border-color: var(--gold); }
+  .contact-icon {
+    width: 44px; height: 44px;
+    background: rgba(245,200,66,0.1);
+    border: 1px solid rgba(245,200,66,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .contact-item h4 { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+  .contact-item p { color: var(--muted); font-size: 0.84rem; }
+  .contact-item a { color: var(--gold); text-decoration: none; }
+
+  .whatsapp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #25D366;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+  }
+  .whatsapp-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(37,211,102,0.35); }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 0.82rem; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 12px 16px;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--gold); }
+  .form-group textarea { min-height: 110px; }
+  .form-group select option { background: var(--dark2); }
+
+  /* ── PAYMENT MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 20px;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 480px;
+    transform: translateY(30px);
+    transition: transform 0.3s;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  .modal-title { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; }
+  .modal-close {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+  .modal-plan-selector {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .plan-opt {
+    flex: 1;
+    min-width: 120px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    background: none;
+    color: var(--text);
+    font-family: var(--font-body);
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .plan-opt .opt-name { font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 3px; }
+  .plan-opt .opt-price { color: var(--gold); font-size: 0.78rem; font-weight: 600; }
+  .plan-opt.active { border-color: var(--gold); background: rgba(245,200,66,0.08); }
+
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .pay-method {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+  }
+  .pay-method i { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+  .pay-method.active { border-color: var(--gold); color: var(--gold); background: rgba(245,200,66,0.07); }
+
+  .pay-submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--gold), #D4A800);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .pay-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(245,200,66,0.4); }
+  .pay-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .success-state {
+    text-align: center;
+    padding: 20px 0;
+    display: none;
+  }
+  .success-state.show { display: block; }
+  .success-icon {
+    width: 80px; height: 80px;
+    background: rgba(0,230,118,0.1);
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    color: var(--green);
+    margin: 0 auto 20px;
+    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+  }
+  .success-title { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; margin-bottom: 10px; }
+  .success-sub { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--border);
+    padding: 60px 6% 30px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-brand p { color: var(--muted); font-size: 0.85rem; line-height: 1.7; margin: 16px 0 20px; }
+  .footer-disclaimer {
+    background: rgba(120,0,0,0.2);
+    border: 1px solid rgba(255,100,100,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #FF9999;
+    font-size: 0.77rem;
+    line-height: 1.6;
+  }
+  .footer-col h5 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    color: var(--gold);
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-col ul a:hover { color: var(--text); }
+  .social-icons { display: flex; gap: 10px; margin-top: 16px; }
+  .social-icon {
+    width: 38px; height: 38px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .social-icon:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,200,66,0.07); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom p { color: var(--muted); font-size: 0.8rem; }
+  .footer-bottom .warn { color: #FF9999; font-size: 0.76rem; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    .about-grid,
+    .contact-grid,
+    .footer-grid { grid-template-columns: 1fr; }
+    .plans-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .testimonials-grid { grid-template-columns: 1fr; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .nav-links { display: none; position: fixed; top: 40px; left: 0; right: 0; background: var(--dark2); flex-direction: column; padding: 24px 6%; gap: 20px; border-bottom: 1px solid var(--border); z-index: 999; }
+    .nav-links.open { display: flex; }
+    .hamburger { display: block; }
+    .hero-stats { gap: 24px; flex-wrap: wrap; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    section { padding: 60px 5%; }
+    .modal { padding: 28px 20px; }
+    .payment-methods { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ── LOADING BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 40px; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), #00E676);
+    z-index: 9999;
+    width: 0;
+    transition: width 0.1s linear;
+  }
+</style>
+</head>
+<body>
+
+<!-- DISCLAIMER BANNER -->
+<div class="disclaimer-banner">
+  ⚠️ We are <span>NOT SEBI Registered</span>. This service is only for <span>educational and support purposes</span>. &nbsp;|&nbsp; Trading involves risk. <span>No guaranteed profits.</span>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="logo">
+    <i class="fas fa-chart-line"></i>
+    TradersHub Center
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#plans">Plans</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#plans" class="nav-cta" onclick="openModal()">Get Started</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+    <i class="fas fa-bars"></i>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-bg"></div>
+  <div class="chart-bg">
+    <div class="chart-line"></div>
+  </div>
+  <div class="candles" id="candles"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-circle" style="font-size:6px;color:var(--green)"></i> Live Support Available</div>
+    <h1 class="hero-title">
+      Trade Smarter with<br>
+      <span class="accent">TradersHub Center</span>
+    </h1>
+    <p class="hero-sub">
+      Receive expert trading calls, market analysis, and real-time guidance to navigate the stock market confidently. Our support team is here to assist—not advise.
+    </p>
+    <p class="hero-warn">
+      <i class="fas fa-exclamation-triangle"></i>
+      Educational & support service only. Not SEBI registered. No profit guarantees.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openModal()">
+        <i class="fas fa-bolt"></i> Get Started
+      </button>
+      <a href="#about" class="btn-outline">
+        <i class="fas fa-play-circle"></i> Learn More
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">2,400+</div>
+        <div class="stat-label">Active Members</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Satisfaction</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">5+ Yrs</div>
+        <div class="stat-label">Experience</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticker tape -->
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label reveal">About Us</div>
+  <h2 class="section-title reveal reveal-delay-1">What is TradersHub Center?</h2>
+  <p class="section-sub reveal reveal-delay-2">
+    A community-driven platform providing trading calls, market insights, and hands-on support — purely for educational purposes.
+  </p>
+
+  <div class="about-grid">
+    <div class="about-visual reveal reveal-delay-1">
+      <div class="mini-chart">
+        <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="chartGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#00E676" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#00E676" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <polyline points="0,140 20,120 40,130 60,90 80,100 100,70 120,80 140,50 160,60 180,40 200,55 220,30 240,45 260,20 280,35 300,15 320,25" fill="none" stroke="#00E676" stroke-width="2" stroke-linejoin="round"/>
+          <polygon points="0,140 20,120 40,130 60,90 80,100 100,70 120,80 140,50 160,60 180,40 200,55 220,30 240,45 260,20 280,35 300,15 320,25 320,160 0,160" fill="url(#chartGrad)"/>
+          <!-- candles -->
+          <g fill="#00E676" opacity="0.8">
+            <rect x="55" y="80" width="6" height="20" rx="1"/>
+            <rect x="95" y="60" width="6" height="20" rx="1"/>
+            <rect x="135" y="42" width="6" height="16" rx="1"/>
+          </g>
+          <g fill="#FF4444" opacity="0.8">
+            <rect x="35" y="118" width="6" height="18" rx="1"/>
+            <rect x="75" y="90" width="6" height="16" rx="1"/>
+          </g>
+          <text x="8" y="14" font-family="Syne,sans-serif" font-size="9" fill="#8A9BBE">NIFTY 50</text>
+          <text x="240" y="14" font-family="Syne,sans-serif" font-size="9" fill="#00E676">+2.4%</text>
+        </svg>
+      </div>
+      <div style="display:flex;gap:16px;font-size:0.8rem;color:var(--muted)">
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--green);display:inline-block"></span>Bullish Call</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--red);display:inline-block"></span>Bearish Alert</span>
+        <span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:var(--gold);display:inline-block"></span>Targets</span>
+      </div>
+    </div>
+
+    <div class="about-features">
+      <div class="about-feat reveal reveal-delay-1">
+        <div class="feat-icon"><i class="fas fa-phone-alt"></i></div>
+        <div class="feat-text">
+          <h4>Daily Trading Calls</h4>
+          <p>Receive curated trading calls every market day based on technical analysis and expert insights. For educational reference only.</p>
+        </div>
+      </div>
+      <div class="about-feat reveal reveal-delay-2">
+        <div class="feat-icon"><i class="fas fa-chart-bar"></i></div>
+        <div class="feat-text">
+          <h4>Market Analysis</h4>
+          <p>Deep-dive reports on Nifty, Bank Nifty, and top stocks to help you understand market trends and movements.</p>
+        </div>
+      </div>
+      <div class="about-feat reveal reveal-delay-3">
+        <div class="feat-icon"><i class="fas fa-headset"></i></div>
+        <div class="feat-text">
+          <h4>Expert Support</h4>
+          <p>Chat with our support team to get your doubts cleared, understand strategies, and improve your trading knowledge.</p>
+        </div>
+      </div>
+      <div class="about-feat reveal reveal-delay-4">
+        <div class="feat-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="feat-text">
+          <h4>Education First</h4>
+          <p>We are NOT SEBI registered. All calls and content are strictly for educational and learning purposes only.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section id="plans">
+  <div class="section-label reveal">Pricing</div>
+  <h2 class="section-title reveal reveal-delay-1">Choose Your Plan</h2>
+  <p class="section-sub reveal reveal-delay-2">
+    Flexible plans designed for different trading styles. All plans are support-only and educational in nature.
+  </p>
+
+  <div class="plans-grid">
+    <!-- Plan 1 -->
+    <div class="plan-card reveal reveal-delay-1">
+      <div class="plan-icon gold"><i class="fas fa-briefcase"></i></div>
+      <div class="plan-name">General Traders</div>
+      <div class="plan-tagline">Perfect for all market participants</div>
+      <div class="plan-price">
+        <span class="price-currency">₹</span>
+        <span class="price-amount">2000</span>
+        <span class="price-period">/month</span>
+      </div>
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Daily trading calls</li>
+        <li><i class="fas fa-check-circle"></i> Market analysis reports</li>
+        <li><i class="fas fa-check-circle"></i> Basic support channel</li>
+        <li><i class="fas fa-check-circle"></i> Nifty & Bank Nifty insights</li>
+        <li><i class="fas fa-check-circle"></i> Monthly performance review</li>
+      </ul>
+      <button class="plan-btn outline" onclick="openModal('general')">Choose Plan</button>
+    </div>
+
+    <!-- Plan 2 – Popular -->
+    <div class="plan-card popular reveal reveal-delay-2">
+      <div class="popular-badge">⚡ Most Popular</div>
+      <div class="plan-icon blue"><i class="fas fa-chart-pie"></i></div>
+      <div class="plan-name">Dhan Users</div>
+      <div class="plan-tagline">Exclusive support for Dhan platform</div>
+      <div class="plan-price">
+        <span class="price-currency">₹</span>
+        <span class="price-amount">1000</span>
+        <span class="price-period">/month</span>
+      </div>
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Dhan platform-specific support</li>
+        <li><i class="fas fa-check-circle"></i> Intraday calls & alerts</li>
+        <li><i class="fas fa-check-circle"></i> Priority chat support</li>
+        <li><i class="fas fa-check-circle"></i> Option chain guidance</li>
+        <li><i class="fas fa-check-circle"></i> Dedicated account manager</li>
+      </ul>
+      <button class="plan-btn filled" onclick="openModal('dhan')">Choose Plan</button>
+    </div>
+
+    <!-- Plan 3 -->
+    <div class="plan-card reveal reveal-delay-3">
+      <div class="plan-icon green"><i class="fas fa-bolt"></i></div>
+      <div class="plan-name">Weekly Users</div>
+      <div class="plan-tagline">Short-term, flexible commitment</div>
+      <div class="plan-price">
+        <span class="price-currency">₹</span>
+        <span class="price-amount">500</span>
+        <span class="price-period">/week</span>
+      </div>
+      <ul class="plan-features">
+        <li><i class="fas fa-check-circle"></i> Short-term trading calls</li>
+        <li><i class="fas fa-check-circle"></i> Limited support access</li>
+        <li><i class="fas fa-check-circle"></i> Weekly market updates</li>
+        <li><i class="fas fa-check-circle"></i> Telegram group access</li>
+        <li><i class="fas fa-check-circle"></i> No long-term commitment</li>
+      </ul>
+      <button class="plan-btn outline" onclick="openModal('weekly')">Choose Plan</button>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--muted);font-size:0.8rem;margin-top:28px;">
+    ⚠️ All plans are educational & support-based only. We are not SEBI registered. Trading involves market risk.
+  </p>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-label reveal">Testimonials</div>
+  <h2 class="section-title reveal reveal-delay-1">What Our Members Say</h2>
+  <p class="section-sub reveal reveal-delay-2">Real feedback from traders who use our educational support services.</p>
+
+  <div class="testimonials-grid">
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The daily market analysis has greatly improved my understanding of Nifty trends. The support team is always responsive and helpful."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RK</div>
+        <div>
+          <div class="testi-name">Rajesh Kumar</div>
+          <div class="testi-loc">Mumbai, Maharashtra</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"As a Dhan user, the ₹1000 plan is fantastic. I get intraday call guidance and the chat support resolves my queries quickly. Worth it!"</p>
+      <div class="testi-author">
+        <div class="testi-avatar">PS</div>
+        <div>
+          <div class="testi-name">Priya Sharma</div>
+          <div class="testi-loc">Bangalore, Karnataka</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-3">
+      <div class="testi-stars">★★★★☆</div>
+      <p class="testi-text">"Started with the weekly plan to test the waters. The educational content is solid and the community is very active and knowledgeable."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AM</div>
+        <div>
+          <div class="testi-name">Arun Mehta</div>
+          <div class="testi-loc">Chennai, Tamil Nadu</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"TradersHub Center helped me understand technical indicators and chart patterns. The support calls are well-explained with clear entry/exit levels."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">SV</div>
+        <div>
+          <div class="testi-name">Sneha Verma</div>
+          <div class="testi-loc">Pune, Maharashtra</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Been a General Trader member for 6 months. The monthly market reviews are incredibly detailed. Great value for the subscription cost."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">VR</div>
+        <div>
+          <div class="testi-name">Vijay Rajan</div>
+          <div class="testi-loc">Hyderabad, Telangana</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-3">
+      <div class="testi-stars">★★★★☆</div>
+      <p class="testi-text">"The Telegram group is very active with useful discussions. The team clarifies doubts patiently. Recommended for beginners who want to learn."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">NK</div>
+        <div>
+          <div class="testi-name">Nitin Kapoor</div>
+          <div class="testi-loc">Delhi, NCR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-label reveal" style="justify-content:center">FAQ</div>
+  <h2 class="section-title reveal reveal-delay-1" style="text-align:center">Frequently Asked Questions</h2>
+  <p class="section-sub reveal reveal-delay-2" style="margin:0 auto;text-align:center">Everything you need to know about our platform.</p>
+
+  <div class="faq-list">
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is TradersHub Center SEBI registered?
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-a">No. TradersHub Center is NOT SEBI registered. We do not provide financial advice or investment recommendations. All services are strictly educational and support-based. Please consult a SEBI-registered advisor for investment decisions.</div>
+    </div>
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Are profits guaranteed with your trading calls?
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-a">Absolutely not. Trading involves significant market risk. We do not guarantee any profits or returns. Our calls are purely educational in nature and should not be treated as financial advice.</div>
+    </div>
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        How do I receive trading calls?
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-a">After subscription, you'll be added to our Telegram group and WhatsApp channel where calls, analysis, and updates are shared. You can also contact our support team directly via chat.</div>
+    </div>
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Can I switch plans after subscribing?
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-a">Yes, you can upgrade or change plans at the end of your current subscription period. Contact our support team and they'll help you transition smoothly.</div>
+    </div>
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        What is the refund policy?
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-a">Due to the nature of the service (digital and educational content), refunds are generally not provided once the subscription is activated. Please review the plan details carefully before subscribing.</div>
+    </div>
+    <div class="faq-item reveal">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Is the Dhan plan only for Dhan app users?
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-a">The Dhan plan is tailored with features specific to the Dhan trading platform interface and workflow, but anyone can subscribe. However, to take full advantage of the support, using the Dhan platform is recommended.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal">Contact</div>
+  <h2 class="section-title reveal reveal-delay-1">Get In Touch</h2>
+  <p class="section-sub reveal reveal-delay-2">Have questions? Our team is ready to assist you with any queries about our support services.</p>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="contact-item reveal reveal-delay-1">
+        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+        <div>
+          <h4>WhatsApp Support</h4>
+          <p>Chat with us directly for quick responses</p>
+          <a href="https://wa.me/919876543210" target="_blank">+91 98765 43210</a>
+        </div>
+      </div>
+      <div class="contact-item reveal reveal-delay-2">
+        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+        <div>
+          <h4>Email Support</h4>
+          <p>Write to us and we'll respond within 24 hrs</p>
+          <a href="mailto:support@tradershubcenter.com">support@tradershubcenter.com</a>
+        </div>
+      </div>
+      <div class="contact-item reveal reveal-delay-3">
+        <div class="contact-icon"><i class="fab fa-telegram"></i></div>
+        <div>
+          <h4>Telegram Channel</h4>
+          <p>Join our active trading support community</p>
+          <a href="#" target="_blank">@TradersHubCenter</a>
+        </div>
+      </div>
+      <a href="https://wa.me/919876543210" target="_blank" class="whatsapp-btn reveal reveal-delay-4">
+        <i class="fab fa-whatsapp" style="font-size:1.3rem"></i>
+        Chat on WhatsApp
+      </a>
+    </div>
+
+    <form class="contact-form reveal reveal-delay-2" onsubmit="submitContact(event)">
+      <div class="form-group">
+        <label>YOUR NAME</label>
+        <input type="text" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label>EMAIL ADDRESS</label>
+        <input type="email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>PHONE NUMBER</label>
+        <input type="tel" placeholder="+91 XXXXX XXXXX">
+      </div>
+      <div class="form-group">
+        <label>SUBJECT</label>
+        <select>
+          <option>Enquiry about plans</option>
+          <option>Technical support</option>
+          <option>Payment issue</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>MESSAGE</label>
+        <textarea placeholder="Write your message here..."></textarea>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;animation:none">
+        <i class="fas fa-paper-plane"></i> Send Message
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo" style="margin-bottom:0"><i class="fas fa-chart-line"></i> TradersHub Center</div>
+      <p>A trading support and educational platform helping traders learn, analyze, and grow — purely for knowledge purposes.</p>
+      <div class="footer-disclaimer">
+        ⚠️ <strong>Disclaimer:</strong> TradersHub Center is NOT SEBI registered. All content is educational only. Trading involves risk. No profits are guaranteed. This is not financial advice.
+      </div>
+      <div class="social-icons" style="margin-top:16px">
+        <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Navigation</h5>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#plans">Pricing Plans</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Plans</h5>
+      <ul>
+        <li><a href="#plans">General Traders – ₹2000/mo</a></li>
+        <li><a href="#plans">Dhan Users – ₹1000/mo</a></li>
+        <li><a href="#plans">Weekly – ₹500/wk</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="#">Risk Disclaimer</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 TradersHub Center. All rights reserved.</p>
+    <p class="warn">⚠️ Not SEBI Registered | Educational Purpose Only | Trading involves risk</p>
+  </div>
+</footer>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div id="paymentForm">
+      <div class="modal-header">
+        <div class="modal-title">Complete Your Subscription</div>
+        <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+      </div>
+
+      <p style="color:var(--muted);font-size:0.82rem;margin-bottom:20px;padding:10px 14px;background:rgba(120,0,0,0.2);border-radius:8px;border:1px solid rgba(255,100,100,0.2);color:#FF9999;">
+        ⚠️ Not SEBI Registered. Educational & support service only. No profit guarantee.
+      </p>
+
+      <div style="font-size:0.78rem;font-weight:700;letter-spacing:0.06em;color:var(--muted);margin-bottom:10px;">SELECT PLAN</div>
+      <div class="modal-plan-selector">
+        <button class="plan-opt" onclick="selectPlan(this,'general','₹2000/month')" id="opt-general">
+          <span class="opt-name">General</span>
+          <span class="opt-price">₹2,000/mo</span>
+        </button>
+        <button class="plan-opt" onclick="selectPlan(this,'dhan','₹1000/month')" id="opt-dhan">
+          <span class="opt-name">Dhan Users</span>
+          <span class="opt-price">₹1,000/mo</span>
+        </button>
+        <button class="plan-opt" onclick="selectPlan(this,'weekly','₹500/week')" id="opt-weekly">
+          <span class="opt-name">Weekly</span>
+          <span class="opt-price">₹500/wk</span>
+        </button>
+      </div>
+
+      <div class="form-group">
+        <label>FULL NAME</label>
+        <input type="text" id="payName" placeholder="Your full name" required>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>EMAIL ADDRESS</label>
+        <input type="email" id="payEmail" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label>PHONE NUMBER</label>
+        <input type="tel" id="payPhone" placeholder="+91 XXXXX XXXXX" required>
+      </div>
+
+      <div style="font-size:0.78rem;font-weight:700;letter-spacing:0.06em;color:var(--muted);margin:20px 0 10px;">PAYMENT METHOD</div>
+      <div class="payment-methods">
+        <button class="pay-method active" onclick="selectPayMethod(this)"><i class="fas fa-mobile-alt"></i>UPI</button>
+        <button class="pay-method" onclick="selectPayMethod(this)"><i class="fas fa-credit-card"></i>Card</button>
+        <button class="pay-method" onclick="selectPayMethod(this)"><i class="fas fa-university"></i>Net Banking</button>
+        <button class="pay-method" onclick="selectPayMethod(this)"><i class="fab fa-google-pay"></i>GPay</button>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px">
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--muted);margin-bottom:8px">
+          <span>Plan</span><span id="summaryPlan" style="color:var(--text)">–</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:var(--muted);margin-bottom:8px">
+          <span>GST (18%)</span><span id="summaryGst" style="color:var(--text)">–</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem;font-weight:700;border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+          <span>Total</span><span id="summaryTotal" style="color:var(--gold)">–</span>
+        </div>
+      </div>
+
+      <button class="pay-submit" id="paySubmit" onclick="processPayment()">
+        <i class="fas fa-lock"></i> &nbsp;Pay Securely
+      </button>
+      <p style="text-align:center;font-size:0.73rem;color:var(--muted);margin-top:12px">
+        <i class="fas fa-lock" style="color:var(--gold)"></i> Secured via Razorpay simulation · 256-bit SSL encrypted
+      </p>
+    </div>
+
+    <div class="success-state" id="successState">
+      <div class="success-icon"><i class="fas fa-check"></i></div>
+      <div class="success-title">Payment Successful! 🎉</div>
+      <p class="success-sub" id="successMsg">Welcome to TradersHub Center! You'll receive your access details on your registered email and WhatsApp within 30 minutes.</p>
+      <button class="btn-primary" style="margin-top:28px;animation:none;border:none;width:100%;justify-content:center" onclick="closeModal()">
+        <i class="fas fa-home"></i> Back to Home
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── TICKER ──
+const ticks = [
+  {name:'NIFTY 50',val:'24,834.85',chg:'+1.2%',up:true},
+  {name:'BANK NIFTY',val:'53,120.40',chg:'+0.8%',up:true},
+  {name:'SENSEX',val:'81,542.10',chg:'+1.1%',up:true},
+  {name:'RELIANCE',val:'₹2,940',chg:'-0.3%',up:false},
+  {name:'TCS',val:'₹3,820',chg:'+0.6%',up:true},
+  {name:'INFY',val:'₹1,680',chg:'+1.4%',up:true},
+  {name:'HDFC BANK',val:'₹1,720',chg:'-0.2%',up:false},
+  {name:'ICICI BANK',val:'₹1,265',chg:'+0.9%',up:true},
+  {name:'WIPRO',val:'₹520',chg:'+0.5%',up:true},
+  {name:'ITC',val:'₹465',chg:'-0.1%',up:false},
+];
+function buildTicker(){
+  const el = document.getElementById('ticker');
+  const all = [...ticks,...ticks];
+  el.innerHTML = all.map(t=>`<span class="tick-item"><span class="tick-name">${t.name}</span> ${t.val} <span class="${t.up?'up':'down'}">${t.chg}</span></span>`).join('');
+}
+buildTicker();
+
+// ── PARTICLES ──
+function createParticles(){
+  const c = document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    const size=Math.random()*4+2;
+    const isGold=Math.random()>0.5;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      background:${isGold?'rgba(245,200,66,0.6)':'rgba(0,230,118,0.5)'};
+      animation-duration:${Math.random()*8+6}s;
+      animation-delay:${Math.random()*6}s;
+    `;
+    c.appendChild(p);
+  }
+}
+createParticles();
+
+// ── CANDLES ──
+function createCandles(){
+  const c = document.getElementById('candles');
+  for(let i=0;i<12;i++){
+    const d = document.createElement('div');
+    const up=Math.random()>0.4;
+    const h=Math.random()*40+20;
+    d.className=`candle ${up?'up':'down'}`;
+    d.style.cssText=`
+      left:${30+Math.random()*65}%;
+      height:${h}px;
+      opacity:${Math.random()*0.3+0.05};
+      animation:candleFloat ${Math.random()*3+3}s ease-in-out ${Math.random()*2}s infinite alternate;
+    `;
+    c.appendChild(d);
+  }
+}
+createCandles();
+
+// ── NAV ──
+function toggleMenu(){
+  document.getElementById('navLinks').classList.toggle('open');
+}
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
+});
+
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal');
+const revealObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('visible');
+  });
+},{threshold:0.12});
+revealEls.forEach(el=>revealObs.observe(el));
+
+// ── FAQ ──
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+}
+
+// ── MODAL ──
+let selectedPlan={name:'',price:0,label:''};
+
+const planData={
+  general:{name:'General Traders',price:2000,label:'₹2,000/month'},
+  dhan:{name:'Dhan Users',price:1000,label:'₹1,000/month'},
+  weekly:{name:'Weekly Users',price:500,label:'₹500/week'},
+};
+
+function openModal(plan){
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('paymentForm').style.display='';
+  document.getElementById('successState').classList.remove('show');
+  document.body.style.overflow='hidden';
+  if(plan && planData[plan]) {
+    const opt=document.getElementById('opt-'+plan);
+    if(opt) selectPlan(opt,plan,planData[plan].label);
+  } else {
+    selectPlan(document.getElementById('opt-dhan'),'dhan','₹1,000/month');
+  }
+}
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function handleOverlayClick(e){
+  if(e.target===document.getElementById('modalOverlay')) closeModal();
+}
+function selectPlan(btn,key,label){
+  document.querySelectorAll('.plan-opt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedPlan={...planData[key],key};
+  const gst=Math.round(selectedPlan.price*0.18);
+  const total=selectedPlan.price+gst;
+  document.getElementById('summaryPlan').textContent=selectedPlan.label;
+  document.getElementById('summaryGst').textContent='₹'+gst;
+  document.getElementById('summaryTotal').textContent='₹'+total;
+}
+function selectPayMethod(btn){
+  document.querySelectorAll('.pay-method').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function processPayment(){
+  const name=document.getElementById('payName').value.trim();
+  const email=document.getElementById('payEmail').value.trim();
+  const phone=document.getElementById('payPhone').value.trim();
+  if(!name||!email||!phone){alert('Please fill in all required fields.');return;}
+  if(!selectedPlan.price){alert('Please select a plan.');return;}
+  const btn=document.getElementById('paySubmit');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> &nbsp;Processing...';
+  setTimeout(()=>{
+    document.getElementById('paymentForm').style.display='none';
+    const s=document.getElementById('successState');
+    s.classList.add('show');
+    document.getElementById('successMsg').textContent=
+      `Welcome, ${name}! Your ${selectedPlan.name} subscription is now active. Access details have been sent to ${email} and your WhatsApp. Thank you for joining TradersHub Center!`;
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-lock"></i> &nbsp;Pay Securely';
+  },2200);
+}
+
+// ── CONTACT FORM ──
+function submitContact(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('button[type=submit]');
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Sending...';
+  btn.disabled=true;
+  setTimeout(()=>{
+    btn.innerHTML='<i class="fas fa-check"></i> Message Sent!';
+    btn.style.background='#00C060';
+    e.target.reset();
+    setTimeout(()=>{
+      btn.innerHTML='<i class="fas fa-paper-plane"></i> Send Message';
+      btn.style.background='';
+      btn.disabled=false;
+    },3000);
+  },1500);
+}
+
+// ── SMOOTH SCROLL offset for sticky nav ──
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){
+      e.preventDefault();
+      const off=t.getBoundingClientRect().top+window.scrollY-90;
+      window.scrollTo({top:off,behavior:'smooth'});
+    }
+  });
+});
+</script>
+</body>
+</html>
